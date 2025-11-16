@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Ma bibliothèque de livres PDF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-alt: #020617;
+      --accent: #f97316;
+      --accent-soft: #fed7aa;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1.2rem 1.5rem;
+      background: linear-gradient(90deg, #020617, #111827);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    header span {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 0.25rem 0.7rem;
+      background: rgba(248, 250, 252, 0.05);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+      min-height: 0;
+    }
+
+    @media (max-width: 800px) {
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+      }
+    }
+
+    /* --- Bookshelf --- */
+
+    .shelf-panel {
+      border-right: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 1.25rem 1.1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: radial-gradient(circle at top left, #1e293b 0, #020617 60%);
+    }
+
+    @media (max-width: 800px) {
+      .shelf-panel {
+        border-right: none;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+      }
+    }
+
+    .shelf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .shelf-title {
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .shelf-count {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.55rem 0.75rem 0.55rem 2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: #64748b;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .shelf {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      padding-top: 0.4rem;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #4b5563 transparent;
+    }
+
+    .shelf::-webkit-scrollbar {
+      width: 8px;
+    }
+    .shelf::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 999px;
+    }
+    .shelf::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .shelf-row {
+      position: relative;
+      padding: 0.55rem 0.4rem 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .shelf-row::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0.35rem;
+      height: 5px;
+      background: linear-gradient(90deg, #4b3422, #6b3a20, #3b2517);
+      border-radius: 999px;
+      box-shadow: 0 6px 12px rgba(15, 23, 42, 0.8);
+    }
+
+    .books {
+      display: flex;
+      gap: 0.3rem;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .book {
+      position: relative;
+      width: 32px;
+      height: 130px;
+      border-radius: 4px 4px 2px 2px;
+      background: linear-gradient(180deg, #f97316, #b45309);
+      box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.9),
+        inset 0 0 0 1px rgba(248, 250, 252, 0.08);
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.3rem;
+    }
+
+    .book:nth-child(3n + 1) {
+      background: linear-gradient(180deg, #22c55e, #15803d);
+    }
+
+    .book:nth-child(3n + 2) {
+      background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+    }
+
+    .book:nth-child(4n + 2) {
+      background: linear-gradient(180deg, #a855f7, #7e22ce);
+    }
+
+    .book:hover {
+      transform: translateY(-4px) translateX(-1px) rotate(-1deg);
+      box-shadow:
+        0 10px 20px rgba(15, 23, 42, 0.95),
+        0 0 0 1px rgba(248, 250, 252, 0.12);
+      filter: brightness(1.05);
+    }
+
+    .book.active {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .book-title {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-align: center;
+      color: #fefce8;
+      letter-spacing: 0.05em;
+      text-shadow: 0 1px 2px rgba(15, 23, 42, 0.8);
+      max-height: 100%;
+      overflow: hidden;
+    }
+
+    /* --- Viewer panel --- */
+
+    .viewer-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .viewer-header {
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .viewer-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .viewer-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .viewer-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .viewer-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 0.35rem 0.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      transition: background 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .btn span.icon {
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      border-color: transparent;
+      background: radial-gradient(circle at top left, #f97316, #b45309);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.9);
+    }
+
+    .viewer-main {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      background: radial-gradient(circle at top, #020617, #000 65%);
+    }
+
+    .viewer-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      text-align: center;
+      color: var(--muted);
+      padding: 1rem;
+      pointer-events: none;
+    }
+
+    .viewer-placeholder .icon {
+      font-size: 2.4rem;
+    }
+
+    iframe#pdfViewer {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+      background: #111827;
+    }
+
+    .viewer-main.has-pdf iframe#pdfViewer {
+      display: block;
+    }
+
+    .viewer-main.has-pdf .viewer-placeholder {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Ma bibliothèque numérique</h1>
+    <span>Livres PDF</span>
+  </div>
+  <div class="badge">Bookshelf interactif</div>
+</header>
+
+<main class="layout">
+  <!-- PANEL GAUCHE : Bookshelf -->
+  <section class="shelf-panel">
+    <div class="shelf-header">
+      <div>
+        <div class="shelf-title">Étagère</div>
+        <div class="shelf-count" id="bookCount">0 livres</div>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        id="searchInput"
+        class="search-input"
+        type="text"
+        placeholder="Rechercher un titre..."
+      />
+    </div>
+
+    <div class="shelf" id="shelf">
+      <!-- Rangée de livres (tu peux dupliquer la rangée si besoin) -->
+      <div class="shelf-row">
+        <div class="books" id="booksRow">
+          <!-- Exemple de livres (à adapter à tes PDFs) -->
+          <div class="book" data-file="pdf/Void_Project.pdf" data-title="Void Project" data-author="Deramane Waren">
+            <div class="book-title">Projet 1</div>
+          </div>
+          <div class="book" data-file="pdf/livre2.pdf" data-title="Livre 2" data-author="Auteur 2">
+            <div class="book-title">Livre 2</div>
+          </div>
+          <div class="book" data-file="pdf/livre3.pdf" data-title="Introduction au PDF" data-author="Auteur 3">
+            <div class="book-title">Intro PDF</div>
+          </div>
+          <div class="book" data-file="pdf/livre4.pdf" data-title="Mon roman" data-author="Moi">
+            <div class="book-title">Mon roman</div>
+          </div>
+          <!-- Tu peux dupliquer ce bloc <div class="book"> pour ajouter plus de livres -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL DROIT : Visualiseur -->
+  <section class="viewer-panel">
+    <div class="viewer-header">
+      <div class="viewer-info">
+        <div class="viewer-title" id="currentTitle">Aucun livre sélectionné</div>
+        <div class="viewer-meta" id="currentMeta">Clique sur un livre sur l’étagère pour l’ouvrir.</div>
+      </div>
+      <div class="viewer-actions">
+        <a id="openNewTab" class="btn" href="#" target="_blank" style="display:none;">
+          <span class="icon">🗔</span>
+          Ouvrir dans un nouvel onglet
+        </a>
+        <a id="downloadLink" class="btn btn-primary" href="#" download style="display:none;">
+          <span class="icon">⬇</span>
+          Télécharger le PDF
+        </a>
+      </div>
+    </div>
+
+    <div class="viewer-main" id="viewerMain">
+      <div class="viewer-placeholder">
+        <div class="icon">📚</div>
+        <div>Bienvenue dans ta bibliothèque numérique.</div>
+        <div>Sélectionne un livre sur l’étagère à gauche pour l’afficher ici.</div>
+      </div>
+      <iframe id="pdfViewer"></iframe>
+    </div>
+  </section>
+</main>
+
+<script>
+  const books = Array.from(document.querySelectorAll('.book'));
+  const viewer = document.getElementById('pdfViewer');
+  const viewerMain = document.getElementById('viewerMain');
+  const currentTitle = document.getElementById('currentTitle');
+  const currentMeta = document.getElementById('currentMeta');
+  const openNewTab = document.getElementById('openNewTab');
+  const downloadLink = document.getElementById('downloadLink');
+  const bookCount = document.getElementById('bookCount');
+  const searchInput = document.getElementById('searchInput');
+
+  // Affiche le nombre de livres
+  bookCount.textContent = books.length + (books.length > 1 ? ' livres' : ' livre');
+
+  // Fonction pour ouvrir un PDF
+  function openBook(bookEl) {
+    const file = bookEl.getAttribute('data-file');
+    const title = bookEl.getAttribute('data-title') || 'Livre PDF';
+    const author = bookEl.getAttribute('data-author') || '';
+
+    // Active / désactive l’état visuel du livre sélectionné
+    books.forEach(b => b.classList.remove('active'));
+    bookEl.classList.add('active');
+
+    // Mettre à jour le viewer
+    viewer.src = file; // utilise le visualiseur intégré du navigateur
+    viewerMain.classList.add('has-pdf');
+
+    currentTitle.textContent = title;
+    currentMeta.textContent = author ? `Auteur : ${author}` : 'Document PDF';
+
+    // Mettre à jour les actions
+    openNewTab.style.display = 'inline-flex';
+    openNewTab.href = file;
+
+    downloadLink.style.display = 'inline-flex';
+    downloadLink.href = file;
+    downloadLink.setAttribute('download', title.replace(/\s+/g, '_') + '.pdf');
+  }
+
+  // Click sur un livre
+  books.forEach(book => {
+    book.addEventListener('click', () => openBook(book));
+  });
+
+  // Recherche simple par titre
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    let visibleCount = 0;
+
+    books.forEach(book => {
+      const title = (book.getAttribute('data-title') || '').toLowerCase();
+      if (!q || title.includes(q)) {
+        book.style.display = '';
+        visibleCount++;
+      } else {
+        book.style.display = 'none';
+      }
+    });
+
+    bookCount.textContent =
+      visibleCount + (visibleCount > 1 ? ' livres trouvés' : ' livre trouvé');
+  });
+</script>
+
+</body>
+</html>
