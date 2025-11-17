@@ -2,13 +2,13 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Ma bibliothèque de livres PDF</title>
+  <title>Accueil – Ma bibliothèque numérique</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
     :root {
-      --bg: #0f172a;
-      --bg-alt: #020617;
+      --bg: #020617;
+      --bg-soft: #0f172a;
       --accent: #f97316;
       --accent-soft: #fed7aa;
       --text: #f9fafb;
@@ -21,490 +21,266 @@
 
     body {
       margin: 0;
+      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
       color: var(--text);
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
     header {
-      padding: 1.2rem 1.5rem;
-      background: linear-gradient(90deg, #020617, #111827);
-      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      padding: 1rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.75rem;
+      gap: 1rem;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 1.4rem;
-      letter-spacing: 0.04em;
-    }
-
-    header span {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .badge {
-      border-radius: 999px;
-      padding: 0.25rem 0.7rem;
-      background: rgba(248, 250, 252, 0.05);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      font-size: 0.75rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .layout {
-      flex: 1;
-      display: grid;
-      grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-      min-height: 0;
-    }
-
-    @media (max-width: 800px) {
-      .layout {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
-      }
-    }
-
-    /* --- Bookshelf --- */
-
-    .shelf-panel {
-      border-right: 1px solid rgba(148, 163, 184, 0.35);
-      padding: 1.25rem 1.1rem 1.5rem;
+    .logo {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      background: radial-gradient(circle at top left, #1e293b 0, #020617 60%);
+      gap: 0.1rem;
     }
 
-    @media (max-width: 800px) {
-      .shelf-panel {
-        border-right: none;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.35);
-      }
-    }
-
-    .shelf-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .shelf-title {
-      font-size: 0.95rem;
+    .logo-title {
+      font-size: 1.2rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--muted);
     }
 
-    .shelf-count {
+    .logo-sub {
       font-size: 0.8rem;
       color: var(--muted);
     }
 
-    .search-box {
-      position: relative;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 0.55rem 0.75rem 0.55rem 2rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      background: rgba(15, 23, 42, 0.85);
-      color: var(--text);
+    .nav-link {
       font-size: 0.85rem;
-      outline: none;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.6);
     }
 
-    .search-input::placeholder {
-      color: #64748b;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 0.6rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.8rem;
-      color: #64748b;
-    }
-
-    .shelf {
-      position: relative;
+    main {
       flex: 1;
-      min-height: 0;
-      padding-top: 0.4rem;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #4b5563 transparent;
-    }
-
-    .shelf::-webkit-scrollbar {
-      width: 8px;
-    }
-    .shelf::-webkit-scrollbar-thumb {
-      background: #4b5563;
-      border-radius: 999px;
-    }
-    .shelf::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .shelf-row {
-      position: relative;
-      padding: 0.55rem 0.4rem 1.2rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .shelf-row::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0.35rem;
-      height: 5px;
-      background: linear-gradient(90deg, #4b3422, #6b3a20, #3b2517);
-      border-radius: 999px;
-      box-shadow: 0 6px 12px rgba(15, 23, 42, 0.8);
-    }
-
-    .books {
-      display: flex;
-      gap: 0.3rem;
-      align-items: flex-end;
-      flex-wrap: wrap;
-    }
-
-    .book {
-      position: relative;
-      width: 32px;
-      height: 130px;
-      border-radius: 4px 4px 2px 2px;
-      background: linear-gradient(180deg, #f97316, #b45309);
-      box-shadow:
-        0 4px 10px rgba(15, 23, 42, 0.9),
-        inset 0 0 0 1px rgba(248, 250, 252, 0.08);
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.3rem;
+      padding: 2rem 1.5rem 3rem;
     }
 
-    .book:nth-child(3n + 1) {
-      background: linear-gradient(180deg, #22c55e, #15803d);
-    }
-
-    .book:nth-child(3n + 2) {
-      background: linear-gradient(180deg, #3b82f6, #1d4ed8);
-    }
-
-    .book:nth-child(4n + 2) {
-      background: linear-gradient(180deg, #a855f7, #7e22ce);
-    }
-
-    .book:hover {
-      transform: translateY(-4px) translateX(-1px) rotate(-1deg);
-      box-shadow:
-        0 10px 20px rgba(15, 23, 42, 0.95),
-        0 0 0 1px rgba(248, 250, 252, 0.12);
-      filter: brightness(1.05);
-    }
-
-    .book.active {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    .book-title {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-align: center;
-      color: #fefce8;
-      letter-spacing: 0.05em;
-      text-shadow: 0 1px 2px rgba(15, 23, 42, 0.8);
-      max-height: 100%;
-      overflow: hidden;
-    }
-
-    /* --- Viewer panel --- */
-
-    .viewer-panel {
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .viewer-header {
-      padding: 0.8rem 1.2rem;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
-      display: flex;
-      justify-content: space-between;
+    .hero {
+      max-width: 900px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 2rem;
       align-items: center;
-      gap: 0.75rem;
     }
 
-    .viewer-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
     }
 
-    .viewer-title {
-      font-size: 0.95rem;
-      font-weight: 600;
+    .hero-title {
+      font-size: clamp(2rem, 3vw, 2.4rem);
+      line-height: 1.1;
+      margin-bottom: 0.8rem;
     }
 
-    .viewer-meta {
-      font-size: 0.8rem;
+    .hero-highlight {
+      background: linear-gradient(90deg, #f97316, #fb923c, #facc15);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-text {
+      font-size: 0.98rem;
       color: var(--muted);
+      max-width: 32rem;
+      margin-bottom: 1.4rem;
     }
 
-    .viewer-actions {
+    .hero-buttons {
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
       flex-wrap: wrap;
+      gap: 0.7rem;
+      justify-content: flex-start;
+    }
+
+    @media (max-width: 800px) {
+      .hero-buttons {
+        justify-content: center;
+      }
     }
 
     .btn {
       border-radius: 999px;
-      padding: 0.35rem 0.8rem;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.8);
-      color: var(--text);
-      font-size: 0.8rem;
+      padding: 0.55rem 1.2rem;
+      font-size: 0.9rem;
+      border: 1px solid rgba(148, 163, 184, 0.8);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.45rem;
       text-decoration: none;
-      transition: background 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+      color: var(--text);
+      background: rgba(15, 23, 42, 0.9);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
     }
 
     .btn span.icon {
-      font-size: 0.9rem;
+      font-size: 1.1rem;
     }
 
     .btn-primary {
       border-color: transparent;
       background: radial-gradient(circle at top left, #f97316, #b45309);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.9);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.9);
     }
 
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.9);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.95);
     }
 
-    .viewer-main {
-      flex: 1;
-      min-height: 0;
+    .hero-note {
+      margin-top: 0.7rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-card {
+      border-radius: 24px;
+      padding: 1.4rem 1.2rem;
+      background: radial-gradient(circle at top left, rgba(248, 250, 252, 0.04), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
       position: relative;
-      background: radial-gradient(circle at top, #020617, #000 65%);
+      overflow: hidden;
     }
 
-    .viewer-placeholder {
+    .hero-card-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-card-main {
+      font-size: 0.95rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      background: rgba(34, 197, 94, 0.12);
+      color: #bbf7d0;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-card-footer {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .hero-card-decoration {
       position: absolute;
       inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      text-align: center;
-      color: var(--muted);
-      padding: 1rem;
       pointer-events: none;
+      opacity: 0.8;
+      background: radial-gradient(circle at 10% 0%, rgba(248, 250, 252, 0.06) 0, transparent 55%),
+                  radial-gradient(circle at 110% 100%, rgba(249, 115, 22, 0.28) 0, transparent 60%);
+      mix-blend-mode: screen;
     }
 
-    .viewer-placeholder .icon {
-      font-size: 2.4rem;
-    }
-
-    iframe#pdfViewer {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: none;
-      background: #111827;
-    }
-
-    .viewer-main.has-pdf iframe#pdfViewer {
-      display: block;
-    }
-
-    .viewer-main.has-pdf .viewer-placeholder {
-      display: none;
+    footer {
+      padding: 0.8rem 1.5rem 1.2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>Ma bibliothèque numérique</h1>
-    <span>Livres PDF</span>
+  <div class="logo">
+    <div class="logo-title">Ma bibliothèque numérique</div>
+    <div class="logo-sub">PDF personnels • Void Project & co</div>
   </div>
-  <div class="badge">Bookshelf + lecteur</div>
+  <a class="nav-link" href="bibliotheque.html">Accéder à la bibliothèque →</a>
 </header>
 
-<main class="layout">
-  <!-- PANEL GAUCHE : Bookshelf -->
-  <section class="shelf-panel">
-    <div class="shelf-header">
-      <div>
-        <div class="shelf-title">Étagère</div>
-        <div class="shelf-count" id="bookCount">0 livres</div>
-      </div>
-    </div>
+<main>
+  <section class="hero">
+    <div>
+      <h1 class="hero-title">
+        Bienvenue dans <span class="hero-highlight">ma bibliothèque de livres PDF</span>
+      </h1>
+      <p class="hero-text">
+        Ici tu peux feuilleter mes projets, romans, et documents au format PDF.
+        Clique sur le bouton ci-dessous pour entrer dans la bibliothèque, choisir un livre
+        sur l’étagère et le lire dans le lecteur intégré.
+      </p>
 
-    <div class="search-box">
-      <span class="search-icon">🔍</span>
-      <input
-        id="searchInput"
-        class="search-input"
-        type="text"
-        placeholder="Rechercher un titre..."
-      />
-    </div>
-
-    <div class="shelf" id="shelf">
-      <!-- Rangée de livres (tu peux dupliquer la rangée si besoin) -->
-      <div class="shelf-row">
-        <div class="books" id="booksRow">
-          <!-- Exemple de livres (à adapter à tes PDFs) -->
-          <div class="book" 
-               data-file="pdf/Void_Project.pdf" 
-               data-title="Void_Project" 
-               data-author="Deramane Waren">
-            <div class="book-title">Void Project</div>
-          </div>
-
-          <div class="book" data-file="pdf/livre4.pdf" data-title="Mon roman" data-author="Moi">
-            <div class="book-title">Mon roman</div>
-          </div>
-          <!-- Tu peux dupliquer ce bloc <div class="book"> pour ajouter plus de livres -->
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PANEL DROIT : Visualiseur -->
-  <section class="viewer-panel">
-    <div class="viewer-header">
-      <div class="viewer-info">
-        <div class="viewer-title" id="currentTitle">Aucun livre sélectionné</div>
-        <div class="viewer-meta" id="currentMeta">Clique sur un livre sur l’étagère pour l’ouvrir.</div>
-      </div>
-      <div class="viewer-actions">
-        <a id="openNewTab" class="btn" href="#" target="_blank" style="display:none;">
-          <span class="icon">🗔</span>
-          Ouvrir en mode moderne
+      <div class="hero-buttons">
+        <a href="bibliotheque.html" class="btn btn-primary">
+          <span class="icon">📚</span>
+          Entrer dans la bibliothèque
         </a>
-        <a id="downloadLink" class="btn btn-primary" href="#" download style="display:none;">
-          <span class="icon">⬇</span>
-          Télécharger le PDF
+        <a href="pdf/Void_Project.pdf" class="btn" target="_blank">
+          <span class="icon">🌀</span>
+          Ouvrir directement Void Project
         </a>
       </div>
+
+      <div class="hero-note">
+        Astuce : depuis la bibliothèque, tu pourras aussi ouvrir les PDF en plein écran
+        ou les télécharger.
+      </div>
     </div>
 
-    <div class="viewer-main" id="viewerMain">
-      <div class="viewer-placeholder">
-        <div class="icon">📚</div>
-        <div>Bienvenue dans ta bibliothèque numérique.</div>
-        <div>Sélectionne un livre sur l’étagère à gauche pour l’afficher ici.</div>
+    <aside class="hero-card">
+      <div class="hero-card-decoration"></div>
+      <div class="hero-card-title">Aperçu</div>
+      <div class="hero-tag">
+        <span>✅</span> Lecteur PDF intégré
       </div>
-      <iframe id="pdfViewer"></iframe>
-    </div>
+      <div class="hero-card-main">
+        • Étagère de livres cliquables<br>
+        • Lecture dans le navigateur<br>
+        • Boutons “mode moderne” (pdf.js) & téléchargement<br>
+      </div>
+      <div class="hero-card-footer">
+        Clique sur <strong>“Entrer dans la bibliothèque”</strong> pour voir tous les livres disponibles.
+      </div>
+    </aside>
   </section>
 </main>
 
+<footer>
+  &copy; <span id="year"></span> Ma bibliothèque numérique – Tous droits réservés
+</footer>
+
 <script>
-  // pdf.js pour le mode "moderne" dans un nouvel onglet
-  const PDFJS_VIEWER_BASE = "https://mozilla.github.io/pdf.js/web/viewer.html?file=";
-
-  const books = Array.from(document.querySelectorAll('.book'));
-  const viewer = document.getElementById('pdfViewer');
-  const viewerMain = document.getElementById('viewerMain');
-  const currentTitle = document.getElementById('currentTitle');
-  const currentMeta = document.getElementById('currentMeta');
-  const openNewTab = document.getElementById('openNewTab');
-  const downloadLink = document.getElementById('downloadLink');
-  const bookCount = document.getElementById('bookCount');
-  const searchInput = document.getElementById('searchInput');
-
-  // Affiche le nombre de livres
-  bookCount.textContent = books.length + (books.length > 1 ? ' livres' : ' livre');
-
-  // Fonction pour ouvrir un PDF (lecteur intégré dans la page)
-  function openBook(bookEl) {
-    const file = bookEl.getAttribute('data-file');
-    const title = bookEl.getAttribute('data-title') || 'Livre PDF';
-    const author = bookEl.getAttribute('data-author') || '';
-
-    // URL absolue vers ton PDF (pour liens externes)
-    const absoluteUrl = new URL(file, window.location.href).toString();
-    const pdfjsUrl = PDFJS_VIEWER_BASE + encodeURIComponent(absoluteUrl);
-
-    // Active / désactive l’état visuel du livre sélectionné
-    books.forEach(b => b.classList.remove('active'));
-    bookEl.classList.add('active');
-
-    // 👉 Ici : on utilise le lecteur PDF intégré du navigateur
-    viewer.src = file;
-    viewerMain.classList.add('has-pdf');
-
-    currentTitle.textContent = title;
-    currentMeta.textContent = author ? `Auteur : ${author}` : 'Document PDF';
-
-    // Bouton "Ouvrir en mode moderne" (pdf.js) dans un nouvel onglet
-    openNewTab.style.display = 'inline-flex';
-    openNewTab.href = pdfjsUrl;
-
-    // Bouton "Télécharger"
-    downloadLink.style.display = 'inline-flex';
-    downloadLink.href = absoluteUrl;
-    downloadLink.setAttribute('download', title.replace(/\s+/g, '_') + '.pdf');
-  }
-
-  // Click sur un livre
-  books.forEach(book => {
-    book.addEventListener('click', () => openBook(book));
-  });
-
-  // Recherche simple par titre
-  searchInput.addEventListener('input', () => {
-    const q = searchInput.value.toLowerCase().trim();
-    let visibleCount = 0;
-
-    books.forEach(book => {
-      const title = (book.getAttribute('data-title') || '').toLowerCase();
-      if (!q || title.includes(q)) {
-        book.style.display = '';
-        visibleCount++;
-      } else {
-        book.style.display = 'none';
-      }
-    });
-
-    bookCount.textContent =
-      visibleCount + (visibleCount > 1 ? ' livres trouvés' : ' livre trouvé');
-  });
+  // année dynamique
+  document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 
 </body>
