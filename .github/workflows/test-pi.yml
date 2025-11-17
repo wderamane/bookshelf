@@ -1,0 +1,19 @@
+name: Test de la Pi
+
+on:
+  push:
+    branches:
+      - main   # ou master si ta branche par défaut s'appelle master
+
+jobs:
+  test:
+    runs-on: self-hosted    # ⬅️ dit à GitHub d'utiliser ton runner Pi
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Afficher un message
+        run: |
+          echo "Hello depuis la Raspberry Pi !"
+          hostname
+          uname -a
