@@ -26,8 +26,6 @@
       flex-direction: column;
     }
 
-    /* HEADER */
-
     header {
       padding: 1.2rem 1.5rem;
       background: linear-gradient(90deg, #020617, #111827);
@@ -93,8 +91,6 @@
       box-shadow: 0 8px 18px rgba(15, 23, 42, 0.9);
     }
 
-    /* LAYOUT */
-
     .layout {
       flex: 1;
       display: grid;
@@ -108,8 +104,6 @@
         grid-template-rows: auto auto;
       }
     }
-
-    /* SHELF PANEL */
 
     .shelf-panel {
       border-right: 1px solid rgba(148, 163, 184, 0.35);
@@ -258,8 +252,6 @@
       overflow: hidden;
     }
 
-    /* VIEWER */
-
     .viewer-panel {
       display: flex;
       flex-direction: column;
@@ -348,8 +340,6 @@
     .viewer-main.has-pdf iframe#pdfViewer { display: block; }
     .viewer-main.has-pdf .viewer-placeholder { display: none; }
 
-    /* AUTH SCREEN */
-
     .auth-screen {
       flex: 1;
       display: none;
@@ -375,7 +365,6 @@
     .auth-sub   { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
   </style>
 
-  <!-- Auth0 SDK -->
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.5/auth0-spa-js.production.js"></script>
 </head>
 <body>
@@ -397,7 +386,6 @@
   </div>
 </header>
 
-<!-- Écran connexion requise -->
 <div id="mustLogin" class="auth-screen">
   <div class="auth-card">
     <div class="auth-title">Connexion requise</div>
@@ -409,10 +397,8 @@
   </div>
 </div>
 
-<!-- Application bibliothèque -->
 <div id="app" style="display:none;">
   <main class="layout">
-    <!-- ÉTAGÈRE -->
     <section class="shelf-panel">
       <div class="shelf-header">
         <div>
@@ -447,13 +433,11 @@
                  data-author="Moi">
               <div class="book-title">Mon roman</div>
             </div>
-            <!-- Ajoute d'autres livres ici -->
           </div>
         </div>
       </div>
     </section>
 
-    <!-- VIEWER -->
     <section class="viewer-panel">
       <div class="viewer-header">
         <div class="viewer-info">
@@ -485,10 +469,9 @@
 </div>
 
 <script>
-  // ------------ CONFIG AUTH0 ------------
   const AUTH0_DOMAIN       = "dev-cs1dp4naybhpswqf.us.auth0.com";
   const AUTH0_CLIENT_ID    = "c0gjwDJ78cwVGoEndWm1fgj7S9Mj6vp2";
-  const AUTH0_REDIRECT_URI = "https://wderamane.github.io/bookshelf"; // PAS de .html
+  const AUTH0_REDIRECT_URI = "https://wderamane.github.io/bookshelf"; // même que dans Auth0
 
   let auth0Client = null;
 
@@ -508,9 +491,8 @@
       }
     });
 
-    // ICI : pas de handleRedirectCallback,
-    // car tous les retours vont vers /bookshelf (la page d'accueil)
-
+    // Après login, Auth0 renvoie d’abord sur /bookshelf (index),
+    // puis quand tu viens ici, on fait juste un check silencieux.
     async function render() {
       const isAuth = await auth0Client.isAuthenticated();
 
@@ -553,8 +535,6 @@
 
     render();
   }
-
-  // ------------ LOGIQUE BIBLIOTHÈQUE ------------
 
   const PDFJS_VIEWER_BASE = "https://mozilla.github.io/pdf.js/web/viewer.html?file=";
 
