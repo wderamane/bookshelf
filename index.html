@@ -6,132 +6,317 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    body {
+    :root {
+      --bg: #0f172a;
+      --accent: #f97316;
+      --accent-soft: #fed7aa;
+      --text: #f9fafb;
+      --muted: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #0f172a;
-      color: #fff;
-      text-align: center;
-      padding: 40px 20px;
+      padding: 0;
     }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #1e293b, #020617 60%, #000);
+      display: flex;
+      flex-direction: column;
     }
 
-    p {
-      color: #9ca3af;
-      margin-bottom: 2rem;
+    /* ---------- BACKGROUND IMAGE ---------- */
+
+    .hero-bg {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(15,23,42,0.95), rgba(15,23,42,0.75) 40%, rgba(15,23,42,0.4)),
+        url("anime-style-cozy-home-interior-with-furnishings.jpg") center/cover no-repeat;
+      z-index: -1;
+      filter: saturate(1.1);
+    }
+
+    /* ---------- HEADER ---------- */
+
+    header {
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-title {
+      font-size: 1.1rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .logo-sub {
+      font-size: .8rem;
+      color: var(--accent-soft);
+      margin-top: .2rem;
+    }
+
+    .tag {
+      font-size: .75rem;
+      padding: .25rem .7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(248,250,252,0.25);
+      background: rgba(15,23,42,0.65);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    /* ---------- MAIN LAYOUT ---------- */
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .hero {
+      max-width: 980px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(260px, 1fr);
+      gap: 2.2rem;
+      align-items: center;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ---------- LEFT : TEXT ---------- */
+
+    .hero-text h1 {
+      font-size: clamp(2rem, 3vw, 2.6rem);
+      margin-bottom: .7rem;
+    }
+
+    .hero-text h1 span {
+      color: var(--accent-soft);
+    }
+
+    .hero-text p {
+      font-size: .95rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.5;
+      margin-bottom: 1.6rem;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 1.3rem;
+    }
+
+    .pill {
+      font-size: .75rem;
+      padding: .25rem .6rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.75);
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--accent-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .pill span.icon {
+      font-size: .9rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
     }
 
     .btn {
-      display: inline-block;
-      margin: 10px;
-      padding: 12px 24px;
       border-radius: 999px;
-      background: #f97316;
-      color: white;
+      padding: .65rem 1.4rem;
+      font-size: .9rem;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
       text-decoration: none;
-      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
       cursor: pointer;
-      font-size: 1rem;
-      font-weight: 600;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-      transition: 0.2s;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+
+    .btn-primary {
+      border-color: transparent;
+      background: radial-gradient(circle at top left, #f97316, #b45309);
+      box-shadow: 0 14px 30px rgba(15,23,42,0.9);
+    }
+
+    .btn span.icon {
+      font-size: 1.1rem;
     }
 
     .btn:hover {
       transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(15,23,42,0.9);
     }
 
     .btn-secondary {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(15,23,42,0.75);
     }
 
-    #userBox {
-      margin-top: 20px;
-      font-size: 0.9rem;
-      color: #fbbf24;
+    /* ---------- RIGHT : COZY CARD ---------- */
+
+    .hero-card {
+      border-radius: 20px;
+      padding: 1.4rem 1.5rem;
+      background: radial-gradient(circle at top left, rgba(248,250,252,0.07), rgba(15,23,42,0.96));
+      border: 1px solid rgba(148,163,184,0.45);
+      box-shadow:
+        0 20px 45px rgba(15,23,42,0.95),
+        0 0 0 1px rgba(15,23,42,0.9);
+      font-size: .9rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .hero-card-title {
+      font-size: .95rem;
+      font-weight: 600;
+      margin-bottom: .6rem;
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+    }
+
+    .hero-card-title span.icon {
+      font-size: 1.2rem;
+    }
+
+    .hero-card p {
+      color: var(--muted);
+      margin-bottom: .9rem;
+      line-height: 1.5;
+    }
+
+    .hero-card-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hero-card-list li {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      margin-bottom: .45rem;
+      font-size: .85rem;
+      color: var(--accent-soft);
+    }
+
+    .hero-card-list li span.bullet {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+    }
+
+    footer {
+      padding: .8rem 1.5rem 1rem;
+      font-size: .75rem;
+      color: #9ca3af;
+      text-align: center;
     }
   </style>
-
-  <!-- Auth0 -->
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.5/auth0-spa-js.production.js"></script>
 </head>
 
 <body>
-  <h1>Bienvenue dans ta Bibliothèque 📚</h1>
-  <p>Connecte-toi pour accéder à tes livres.</p>
 
-  <button id="loginBtn" class="btn">Se connecter</button>
-  <button id="logoutBtn" class="btn btn-secondary" style="display:none;">Se déconnecter</button>
+  <div class="hero-bg" aria-hidden="true"></div>
 
-  <br /><br />
-  <a href="http://wderamane.github.io/bookshelf/bibliotheque.html" class="btn btn-secondary">Accéder à la Bibliothèque →</a>
+  <header>
+    <div>
+      <div class="logo-title">Bookshelf personnel</div>
+      <div class="logo-sub">Ta bulle de lecture, en ligne.</div>
+    </div>
+    <div class="tag">📚 Espace de lecture privé</div>
+  </header>
 
-  <div id="userBox"></div>
+  <main>
+    <section class="hero">
+
+      <!-- Colonne gauche : texte -->
+      <div class="hero-text">
+        <h1>
+          Retrouve tes <span>PDF</span> dans un coin lecture cozy.
+        </h1>
+        <p>
+          Romans, projets, notes perso… Tout est rangé sur ta propre étagère numérique
+          avec un lecteur intégré. Ouvre ta bibliothèque, choisis un livre et laisse-toi
+          porter.
+        </p>
+
+        <div class="hero-badges">
+          <div class="pill"><span class="icon">✨</span>Interface minimaliste</div>
+          <div class="pill"><span class="icon">📖</span>Lecteur PDF intégré</div>
+          <div class="pill"><span class="icon">🌙</span>Ambiance cosy</div>
+        </div>
+
+        <div class="hero-actions">
+          <a href="bibliotheque.html" class="btn btn-primary">
+            <span class="icon">📚</span>
+            Ouvrir ma bibliothèque
+          </a>
+
+          <a href="#about" class="btn btn-secondary">
+            <span class="icon">👀</span>
+            Voir le concept
+          </a>
+        </div>
+      </div>
+
+      <!-- Colonne droite : carte cosy -->
+      <aside class="hero-card" id="about">
+        <div class="hero-card-title">
+          <span class="icon">🛋</span>
+          Ton salon de lecture numérique
+        </div>
+        <p>
+          Imagine un fauteuil confortable, une lumière chaude qui passe par la fenêtre
+          et une pile de livres à portée de main. C’est ce que cette petite appli
+          essaie de reproduire, mais sur ton écran.
+        </p>
+
+        <ul class="hero-card-list">
+          <li><span class="bullet"></span>Une étagère simple pour organiser tes PDF.</li>
+          <li><span class="bullet"></span>Un lecteur moderne pour feuilleter tes livres directement.</li>
+          <li><span class="bullet"></span>Un design pensé pour lire au calme, le soir.</li>
+        </ul>
+      </aside>
+
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> – Bookshelf perso. Fait pour lire au calme.
+  </footer>
 
   <script>
-    // ---- CONFIG ----
-    const AUTH0_DOMAIN       = "dev-cs1dp4naybhpswqf.us.auth0.com";
-    const AUTH0_CLIENT_ID    = "c0gjwDJ78cwVGoEndWm1fgj7S9Mj6vp2";
-    const AUTH0_REDIRECT_URI = "https://wderamane.github.io/bookshelf";
-
-    let auth0Client = null;
-
-    async function initAuthIndex() {
-      const loginBtn  = document.getElementById("loginBtn");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const userBox   = document.getElementById("userBox");
-
-      // Initialisation du SDK
-      auth0Client = await auth0.createAuth0Client({
-        domain: AUTH0_DOMAIN,
-        clientId: AUTH0_CLIENT_ID,
-        authorizationParams: {
-          redirect_uri: AUTH0_REDIRECT_URI
-        }
-      });
-
-      // Auth0 renvoie ici après login
-      if (window.location.search.includes("code=")) {
-        await auth0Client.handleRedirectCallback();
-        window.history.replaceState({}, document.title, AUTH0_REDIRECT_URI);
-      }
-
-      const isAuth = await auth0Client.isAuthenticated();
-
-      if (isAuth) {
-        const user = await auth0Client.getUser();
-
-        loginBtn.style.display  = "none";
-        logoutBtn.style.display = "inline-block";
-
-        userBox.textContent = "Connecté en tant que : " + user.email;
-      }
-
-      // Bouton login
-      loginBtn.addEventListener("click", () => {
-        auth0Client.loginWithRedirect({
-          authorizationParams: {
-            redirect_uri: AUTH0_REDIRECT_URI
-          }
-        });
-      });
-
-      // Bouton logout
-      logoutBtn.addEventListener("click", () => {
-        auth0Client.logout({
-          logoutParams: { returnTo: AUTH0_REDIRECT_URI }
-        });
-      });
-    }
-
-    window.onload = () => {
-      initAuthIndex().catch(console.error);
-    };
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
